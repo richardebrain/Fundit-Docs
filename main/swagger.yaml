@@ -1,0 +1,404 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "FUNDiT kyc Api",
+    "description" : "FUNDiT Kyc Api Endpoint for Partners",
+    "contact" : {
+      "email" : "richard.adebayo@fundit.com.ng"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://api.fundit.com.ng",
+    "description" : "FUNDiT KYC"
+  } ],
+  "tags" : [ {
+    "name" : "Users",
+    "description" : "Secured users-only calls"
+  } ],
+  "paths" : {
+    "/kyc/customer/basic/verify" : {
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Searches Bvn Database for the Specified Bvn",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "operationId" : "verify_BVN",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "query",
+          "description" : "pass a userId search string to look up the partner from the database",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "1234"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "BVN data to search for",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BvnData"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Request Processed Successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BvnResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Invalid partnerId , Create an account"
+          }
+        }
+      }
+    },
+    "/kyc/customer/crc/verify" : {
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Searches for a customer credit Report",
+        "description" : "Searches for a customer credit Report from our Partners and returns the Personal Details and Credit Scoring Risk Assessment",
+        "operationId" : "get_CreditReport",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "query",
+          "description" : "pass a userId search string to look up the partner from the database",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "1234"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreditScoringData"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Request Processed Successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/CreditScoringResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "BvnData" : {
+        "required" : [ "idType", "idValue" ],
+        "type" : "object",
+        "properties" : {
+          "idType" : {
+            "$ref" : "#/components/schemas/BvnData_idType"
+          },
+          "idValue" : {
+            "maxLength" : 11,
+            "minLength" : 11,
+            "type" : "string",
+            "example" : "00000000000"
+          }
+        }
+      },
+      "BvnResponse" : {
+        "required" : [ "_id", "bvn", "date_of_birth", "email", "first_name", "last_name", "lga_of_birth", "marital_status", "middle_name", "nationality", "phone_number_1", "photo", "residential_address", "state_of_origin", "success" ],
+        "type" : "object",
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "example" : "6534cc912b51996c07818241"
+          },
+          "last_name" : {
+            "type" : "string",
+            "example" : "Leo"
+          },
+          "first_name" : {
+            "type" : "string",
+            "example" : "Joe"
+          },
+          "email" : {
+            "type" : "string",
+            "example" : "Joe@smileidentity.com"
+          },
+          "bvn" : {
+            "type" : "string",
+            "example" : "00000000000"
+          },
+          "marital_status" : {
+            "type" : "string",
+            "example" : "Single"
+          },
+          "middle_name" : {
+            "type" : "string",
+            "example" : "Doe"
+          },
+          "date_of_birth" : {
+            "type" : "string",
+            "example" : "2000-09-20T00:00:00.000Z"
+          },
+          "lga_of_origin" : {
+            "type" : "string",
+            "example" : "Mushin"
+          },
+          "nationality" : {
+            "type" : "string",
+            "example" : "Nigeria"
+          },
+          "residential_address" : {
+            "type" : "string",
+            "example" : "10, Workbox, Ojora Close, Victoria Island, Lagos"
+          },
+          "state_of_origin" : {
+            "type" : "string",
+            "example" : "Lagos State"
+          },
+          "gender" : {
+            "type" : "string",
+            "example" : "Male"
+          },
+          "lga_of_residence" : {
+            "type" : "string",
+            "example" : "Mushin"
+          },
+          "state_of_residence" : {
+            "type" : "string",
+            "example" : "Lagos State"
+          },
+          "success" : {
+            "type" : "boolean",
+            "example" : true
+          },
+          "Photo" : {
+            "type" : "string",
+            "format" : "url",
+            "example" : "http://res.cloudinary.com/fundit-bvn/image/upload/v1697959056/bvn/bj48rfwlympbmwqond31.jpg"
+          }
+        }
+      },
+      "CreditScoringData" : {
+        "required" : [ "Identification" ],
+        "type" : "object",
+        "properties" : {
+          "Identification" : {
+            "maxLength" : 11,
+            "minLength" : 11,
+            "type" : "string",
+            "example" : "22471069115"
+          }
+        }
+      },
+      "CreditScoringResponse" : {
+        "required" : [ "PersonalDetailsSummary", "Scoring" ],
+        "type" : "object",
+        "properties" : {
+          "PersonalDetailsSummary" : {
+            "$ref" : "#/components/schemas/CreditScoringResponse_PersonalDetailsSummary"
+          },
+          "Scoring" : {
+            "$ref" : "#/components/schemas/CreditScoringResponse_Scoring"
+          }
+        }
+      },
+      "BvnData_idType" : {
+        "type" : "object",
+        "properties" : {
+          "label" : {
+            "type" : "string",
+            "example" : "BVN"
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "BVN"
+          }
+        }
+      },
+      "CreditScoringResponse_PersonalDetailsSummary" : {
+        "type" : "object",
+        "properties" : {
+          "ConsumerID" : {
+            "type" : "string",
+            "example" : "2599049"
+          },
+          "Header" : {
+            "type" : "string",
+            "example" : "PERSONAL DETAILS SUMMARY: Amos Testi"
+          },
+          "ReferenceNo" : {
+            "type" : "string"
+          },
+          "Nationality" : {
+            "type" : "string",
+            "example" : "Nigeria"
+          },
+          "NationalIDNo" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "PassportNo" : {
+            "type" : "string"
+          },
+          "DriversLicenseNo" : {
+            "type" : "string"
+          },
+          "BankVerificationNo" : {
+            "type" : "string",
+            "example" : "22471069115"
+          },
+          "PencomIDNo" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "OtheridNo" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "BirthDate" : {
+            "type" : "string",
+            "example" : "26/01/1977"
+          },
+          "Dependants" : {
+            "type" : "number",
+            "example" : 0
+          },
+          "Gender" : {
+            "type" : "string",
+            "example" : "Female"
+          },
+          "MaritalStatus" : {
+            "type" : "string"
+          },
+          "ResidentialAddress1" : {
+            "type" : "string",
+            "example" : "College Road Abaro Aladje"
+          },
+          "ResidentialAddress2" : {
+            "type" : "string",
+            "example" : "Delta"
+          },
+          "ResidentialAddress3" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "ResidentialAddress4" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "PostalAddress1" : {
+            "type" : "string"
+          },
+          "PostalAddress2" : {
+            "type" : "string"
+          },
+          "PostalAddress3" : {
+            "type" : "string"
+          },
+          "PostalAddress4" : {
+            "type" : "string"
+          },
+          "HomeTelephoneNo" : {
+            "type" : "string"
+          },
+          "WorkTelephoneNo" : {
+            "type" : "string"
+          },
+          "CellularNo" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "EmailAddress" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "EmployerDetail" : {
+            "type" : "string"
+          },
+          "PropertyOwnedType" : {
+            "type" : "string",
+            "example" : "string"
+          },
+          "Surname" : {
+            "type" : "string",
+            "example" : "Amos"
+          },
+          "FirstName" : {
+            "type" : "string",
+            "example" : "Testi"
+          },
+          "OtherNames" : {
+            "type" : "string",
+            "example" : "tring"
+          }
+        }
+      },
+      "CreditScoringResponse_Scoring" : {
+        "type" : "object",
+        "properties" : {
+          "ConsumerID" : {
+            "type" : "string",
+            "example" : "2599049"
+          },
+          "RepaymentHistoryScore" : {
+            "type" : "string",
+            "example" : "181/192"
+          },
+          "TotalAmountOwedScore" : {
+            "type" : "string",
+            "example" : "165/165"
+          },
+          "TypesOfCreditScore" : {
+            "type" : "string",
+            "example" : "40/55"
+          },
+          "LengthOfCreditHistoryScore" : {
+            "type" : "string",
+            "example" : "21/83"
+          },
+          "NoOfAcctScore" : {
+            "type" : "string",
+            "example" : "55/55"
+          },
+          "TotalConsumerScore" : {
+            "type" : "string",
+            "example" : "762"
+          },
+          "Description" : {
+            "type" : "string",
+            "example" : "LOW RISK"
+          },
+          "ScoreDate" : {
+            "type" : "string",
+            "example" : "06/07/2023"
+          }
+        }
+      }
+    }
+  }
+}
